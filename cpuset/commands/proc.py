@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 """
 
-import sys, os, re, logging, pwd, grp
+import sys, os, re, logging, pwd, grp, shlex
 from optparse import OptionParser, make_option
 
 from cpuset import config
@@ -711,7 +711,7 @@ def task_detail(pid, width=70):
         except:
             pass  # sometimes, we get an extra \n out of this file...
     stat = file('/proc/'+pid+'/stat', 'r').readline()
-    stat = stat.split()
+    stat = shlex.split(re.sub(r'\((.*)\)', r'"(\1)"', stat))
     cmdline = file('/proc/'+pid+'/cmdline').readline()
     # assume that a zero delimits the cmdline (it does now...)
     cmdline = cmdline.replace('\0', ' ')
